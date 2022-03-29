@@ -42,7 +42,7 @@ NoCars = 25
 
 #Timestep and final time
 dt = 0.001
-tFinal = 250
+tFinal = 1000
 
 #The time array
 t = np.linspace(0,tFinal,int(tFinal/dt))
@@ -64,12 +64,12 @@ vmax = 14.66
 a = np.full(NoCars,-6)
 
 #Reaction time of the driver in response to behaviour of the driver in front
-tw = np.full(NoCars,0.8)
+tw = SFC64.uniform(0,1,NoCars)
 
 hcStop = 8.7
 
 #Driver Agressivness, less than 0 is agressive 0 is neutral and more than 0 is conservative
-r = np.full(NoCars,0)
+r = SFC64.uniform(-1,1,NoCars)
 
 #Sensativity Coeffienct
 Kon = 1
@@ -83,6 +83,7 @@ RingRoad = True
 def ODE(a,v,x,t,dt,tw,hcStop,NoCars,Kon,r,RingRoad):
     #Opens the txt to write the data
     out = open('Out.txt' , 'w')
+    out1 = open('OutRVAL.txt' , 'w')
     for i in range(len(t)):
         for b in range(NoCars):
             #DeltaX is the difference between the n and n-1 car
@@ -132,9 +133,17 @@ def ODE(a,v,x,t,dt,tw,hcStop,NoCars,Kon,r,RingRoad):
             a[b] = dv
             
         #Writes the data the txt
-        out.write(f"{t[i]} {x} {v} {a}\n")
+        out.write(f"{t[i]} {x} {v} {a} \n")
     #Closes the txt file
+    out1.write(f"{r}")
     out.close()
+    out1.close()
     return
 
-ODE(a,v,x,t,dt,tw,hcStop,NoCars,Kon,r,RingRoad)
+def main():
+    ODE(a,v,x,t,dt,tw,hcStop,NoCars,Kon,r,RingRoad)
+    
+    return
+
+if __name__ == "__main__":
+    main()
